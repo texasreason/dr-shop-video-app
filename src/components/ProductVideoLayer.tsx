@@ -15,7 +15,7 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
   const { products, colorOverlay, qrCode } = useAppStore();
   
   // Preview scale to match the main video
-  const previewScale = 0.55; // Increased from 0.4 to make it larger and more visible
+  const previewScale = 0.7; // Increased further for better visibility
 
   // Find the active product for current time
   const activeProduct = products.find(product => 
@@ -23,11 +23,26 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
     currentTime < product.timing.startTime + product.timing.duration
   );
 
-  // Full resolution positioning (will be scaled down)
-  const fullResColorOverlayLeft = 1920 - 600; // Right-aligned 600px overlay
-  const fullResProductCarouselWidth = 450;
-  // Simplified centering: center the product in the color overlay
-  const fullResProductCarouselLeft = fullResColorOverlayLeft + (600 - fullResProductCarouselWidth) / 2;
+  // Calculate color overlay position in preview (scaled to match PreviewPanel)
+  const getOverlayPosition = () => {
+    const originalCanvasWidth = 1920;
+    switch (colorOverlay.position) {
+      case 'left':
+        return 0;
+      case 'right':
+        return originalCanvasWidth - 600; // Fixed 600px width
+      case 'center':
+        return (originalCanvasWidth - 600) / 2;
+      default:
+        return originalCanvasWidth - 600; // Default to right
+    }
+  };
+
+  // Position product module over the color overlay area
+  const colorOverlayLeft = getOverlayPosition() * previewScale;
+  const colorOverlayWidth = 600 * previewScale;
+  const productModuleWidth = 400 * previewScale;
+  const productModuleLeft = colorOverlayLeft + (colorOverlayWidth - productModuleWidth) / 2;
 
   return (
     <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }}>
@@ -36,10 +51,10 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
         <div
           className="absolute flex flex-col items-center"
           style={{
-            left: `${fullResProductCarouselLeft * previewScale}px`,
-            width: `${fullResProductCarouselWidth * previewScale}px`,
-            top: `${50 * previewScale}px`,
-            padding: `${40 * previewScale}px ${16 * previewScale}px`,
+            left: `${productModuleLeft}px`,
+            width: `${productModuleWidth}px`,
+            top: `${60 * previewScale}px`,
+            padding: `${20 * previewScale}px ${10 * previewScale}px`,
             zIndex: 25,
           }}
         >
@@ -48,7 +63,7 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
             className="p-6 text-center"
             style={{
               width: '100%',
-              minHeight: `${800 * previewScale}px`
+              minHeight: `${500 * previewScale}px`
             }}
           >
             {/* Product image */}
