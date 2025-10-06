@@ -330,7 +330,12 @@ const PreviewPanel: React.FC = () => {
             </div>
           )}
 
-          {/* Product rendering now handled by ProductVideoLayer */}
+          {/* Product rendering handled by ProductVideoLayer */}
+          <ProductVideoLayer 
+            currentTime={previewTime}
+            isPlaying={isPreviewPlaying}
+            videoDuration={videoSettings.duration}
+          />
 
           {/* Logo + Text Module - positioned below video */}
           {(logo.visible && logo.url) || overlayText.visible ? (
