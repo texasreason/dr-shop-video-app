@@ -460,7 +460,7 @@ const PreviewPanel: React.FC = () => {
                   width: `${1137 * previewScale}px`,
                   height: `${640 * previewScale}px`,
                   zIndex: 1,
-                  border: '3px solid lime' // Green border to see video bounds
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3), 0 6px 10px rgba(0, 0, 0, 0.15)'
                 }}
               />
             )}

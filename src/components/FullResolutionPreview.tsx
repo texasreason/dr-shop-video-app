@@ -121,6 +121,38 @@ const FullResolutionPreview: React.FC<FullResolutionPreviewProps> = ({ isOpen, o
       ctx.textAlign = 'center';
       ctx.fillText('VIDEO', videoXPosition + videoWidth/2, videoYPosition + videoHeight/2);
 
+      // Draw independent QR code if visible (outside of product showcase)
+      if (qrCode.visible && qrCode.url) {
+        try {
+          const qrImg = new Image();
+          qrImg.crossOrigin = 'anonymous';
+          await new Promise((resolve, reject) => {
+            qrImg.onload = resolve;
+            qrImg.onerror = reject;
+            qrImg.src = qrCode.url!;
+          });
+          
+          const qrSize = 188;
+          const qrX = overlayCenter - (qrSize / 2);
+          const qrY = 1080 - 50 - qrSize - 60; // Bottom positioning with text space
+          
+          ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+          
+          // Draw "SHOP NOW" text
+          ctx.fillStyle = '#111827';
+          ctx.font = 'bold 16px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText('SHOP NOW', overlayCenter, qrY + qrSize + 20);
+          
+          // Draw QR code description
+          ctx.fillStyle = '#6B7280';
+          ctx.font = '14px Arial';
+          ctx.fillText('Scan QR code to shop all the products', overlayCenter, qrY + qrSize + 40);
+        } catch (error) {
+          console.warn('Failed to load QR code image for canvas:', error);
+        }
+      }
+
       // Draw logo if exists
       if (logo.visible && logo.url) {
         const logoImg = new Image();
@@ -356,6 +388,46 @@ const FullResolutionPreview: React.FC<FullResolutionPreviewProps> = ({ isOpen, o
                     zIndex: 0,
                   }}
                 />
+              )}
+
+              {/* Independent QR Code - Centered in color overlay */}
+              {qrCode.visible && qrCode.url && (
+                <div
+                  className="absolute text-center"
+                  style={{
+                    left: `${overlayCenter - 94}px`, // Centered in overlay (188px QR / 2 = 94px offset)
+                    bottom: '50px',
+                    zIndex: 4,
+                  }}
+                >
+                  <img
+                    src={qrCode.url}
+                    alt="QR Code"
+                    className="mx-auto"
+                    style={{
+                      width: '188px',
+                      height: '188px',
+                      marginBottom: '12px'
+                    }}
+                  />
+                  <p 
+                    className="font-bold text-gray-900"
+                    style={{ 
+                      fontSize: '16px',
+                      marginBottom: '4px'
+                    }}
+                  >
+                    SHOP NOW
+                  </p>
+                  <p 
+                    className="text-gray-600"
+                    style={{ 
+                      fontSize: '14px'
+                    }}
+                  >
+                    Scan QR code to shop all the products
+                  </p>
+                </div>
               )}
 
               {/* Main Video Area */}
