@@ -390,7 +390,7 @@ const FullResolutionPreview: React.FC<FullResolutionPreviewProps> = ({ isOpen, o
                 />
               )}
 
-              {/* Independent QR Code - Centered in color overlay */}
+              {/* Independent QR Code - Separate from product showcase */}
               {qrCode.visible && qrCode.url && (
                 <div
                   className="absolute text-center"

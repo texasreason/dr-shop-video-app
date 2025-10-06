@@ -118,38 +118,6 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
               >
                 ${activeProduct.price.replace('$', '')}
               </p>
-
-              {/* QR Code Section within product showcase */}
-              {qrCode.visible && qrCode.url && (
-                <div className="text-center mt-4">
-                  <img
-                    src={qrCode.url}
-                    alt="QR Code"
-                    className="mx-auto mb-2"
-                    style={{
-                      width: `${120 * previewScale}px`,
-                      height: `${120 * previewScale}px`
-                    }}
-                  />
-                  <p 
-                    className="font-bold text-gray-900"
-                    style={{ 
-                      fontSize: `${14 * previewScale}px`,
-                      marginBottom: `${4 * previewScale}px`
-                    }}
-                  >
-                    SHOP NOW
-                  </p>
-                  <p 
-                    className="text-gray-600"
-                    style={{ 
-                      fontSize: `${12 * previewScale}px`
-                    }}
-                  >
-                    Scan QR code to shop all the products
-                  </p>
-                </div>
-              )}
             </div>
           </div>
         </div>
