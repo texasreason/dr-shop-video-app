@@ -15,7 +15,7 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
   const { products, colorOverlay, qrCode } = useAppStore();
   
   // Preview scale to match the main video
-  const previewScale = 0.4;
+  const previewScale = 0.55; // Increased from 0.4 to make it larger and more visible
 
   // Find the active product for current time
   const activeProduct = products.find(product => 
@@ -26,7 +26,8 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
   // Full resolution positioning (will be scaled down)
   const fullResColorOverlayLeft = 1920 - 600; // Right-aligned 600px overlay
   const fullResProductCarouselWidth = 450;
-  const fullResProductCarouselLeft = fullResColorOverlayLeft + (600 - fullResProductCarouselWidth) / 2 + 75 - 6;
+  // Simplified centering: center the product in the color overlay
+  const fullResProductCarouselLeft = fullResColorOverlayLeft + (600 - fullResProductCarouselWidth) / 2;
 
   return (
     <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }}>
@@ -42,9 +43,9 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
             zIndex: 25,
           }}
         >
-          {/* Product content with white background */}
+          {/* Product content without background */}
           <div 
-            className="bg-white bg-opacity-95 rounded-lg p-6 text-center"
+            className="p-6 text-center"
             style={{
               width: '100%',
               minHeight: `${800 * previewScale}px`
@@ -108,21 +109,51 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
               )}
               
               <p 
-                className="font-bold text-gray-900"
+                className="font-bold text-orange-500"
                 style={{ 
                   fontSize: `${40 * previewScale}px`,
-                  marginBottom: `${30 * previewScale}px`,
+                  marginBottom: `${20 * previewScale}px`,
                   lineHeight: '1.1'
                 }}
               >
                 ${activeProduct.price.replace('$', '')}
               </p>
+
+              {/* QR Code Section within product showcase */}
+              {qrCode.visible && qrCode.url && (
+                <div className="text-center mt-4">
+                  <img
+                    src={qrCode.url}
+                    alt="QR Code"
+                    className="mx-auto mb-2"
+                    style={{
+                      width: `${120 * previewScale}px`,
+                      height: `${120 * previewScale}px`
+                    }}
+                  />
+                  <p 
+                    className="font-bold text-gray-900"
+                    style={{ 
+                      fontSize: `${14 * previewScale}px`,
+                      marginBottom: `${4 * previewScale}px`
+                    }}
+                  >
+                    SHOP NOW
+                  </p>
+                  <p 
+                    className="text-gray-600"
+                    style={{ 
+                      fontSize: `${12 * previewScale}px`
+                    }}
+                  >
+                    Scan QR code to shop all the products
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
       )}
-
-      {/* QR Code removed - handled separately in renderOverlay */}
     </div>
   );
 };

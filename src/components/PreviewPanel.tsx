@@ -290,45 +290,7 @@ const PreviewPanel: React.FC = () => {
 
 
 
-          {/* Independent QR Code - Centered in color overlay */}
-          {qrCode.visible && qrCode.url && (
-            <div
-              className="absolute text-center"
-              style={{
-                left: `${fullResOverlayCenter - 44}px`, // Moved 10px left (was -34px)
-                bottom: '50px', // Full resolution positioning
-                zIndex: 4,
-              }}
-            >
-              <img
-                src={qrCode.url}
-                alt="QR Code"
-                className="mx-auto"
-                style={{
-                  width: '188px', // Full resolution size
-                  height: '188px', // Full resolution size
-                  marginBottom: '12px' // Full resolution margin
-                }}
-              />
-              <p 
-                className="font-bold text-gray-900"
-                style={{ 
-                  fontSize: '16px', // Full resolution font size
-                  marginBottom: '4px'
-                }}
-              >
-                SHOP NOW
-              </p>
-              <p 
-                className="text-gray-600"
-                style={{ 
-                  fontSize: '14px' // Full resolution font size
-                }}
-              >
-                Scan QR code to shop all the products
-              </p>
-            </div>
-          )}
+          {/* QR Code now handled within ProductVideoLayer */}
 
           {/* Product rendering handled by ProductVideoLayer */}
           <ProductVideoLayer 
