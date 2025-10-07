@@ -15,7 +15,7 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
   const { products, colorOverlay, qrCode } = useAppStore();
   
   // Preview scale to match the main video
-  const previewScale = 0.7; // Increased further for better visibility
+  const previewScale = 1.4; // Increased to 2x from 0.7 (doubled)
 
   // Find the active product for current time
   const activeProduct = products.find(product => 
@@ -42,7 +42,7 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
   const colorOverlayLeft = getOverlayPosition() * previewScale;
   const colorOverlayWidth = 600 * previewScale;
   const productModuleWidth = 400 * previewScale;
-  const productModuleLeft = colorOverlayLeft + (colorOverlayWidth - productModuleWidth) / 2;
+  const productModuleLeft = colorOverlayLeft + (colorOverlayWidth - productModuleWidth) / 2 + 200; // Shifted 200px to the right
 
   return (
     <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }}>
