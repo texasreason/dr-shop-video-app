@@ -38,11 +38,12 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
     }
   };
 
-  // Position product module over the color overlay area
-  const colorOverlayLeft = getOverlayPosition() * previewScale;
-  const colorOverlayWidth = 600 * previewScale;
-  const productModuleWidth = 400 * previewScale;
-  const productModuleLeft = colorOverlayLeft + (colorOverlayWidth - productModuleWidth) / 2 + 100; // Shifted 100px to the right (reduced from 200px)
+  // Position product module over the color overlay area with debug scaling
+  const baseScale = 0.4; // Base preview scale to match video preview scaling
+  const colorOverlayLeft = getOverlayPosition() * baseScale;
+  const colorOverlayWidth = 600 * baseScale;
+  const productModuleWidth = 300 * previewScale; // Use larger scale for just the module
+  const productModuleLeft = colorOverlayLeft + (colorOverlayWidth - productModuleWidth) / 2;
 
   return (
     <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }}>
@@ -53,9 +54,10 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
           style={{
             left: `${productModuleLeft}px`,
             width: `${productModuleWidth}px`,
-            top: `${60 * previewScale}px`,
-            padding: `${20 * previewScale}px ${10 * previewScale}px`,
+            top: `${30}px`, // Fixed top position for visibility
+            padding: `${10}px`,
             zIndex: 25,
+            border: '2px solid red', // Debug border to see if it's visible
           }}
         >
           {/* Product content without background */}
@@ -63,7 +65,8 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
             className="p-6 text-center"
             style={{
               width: '100%',
-              minHeight: `${500 * previewScale}px`
+              minHeight: `${200}px`, // Fixed height for debugging
+              backgroundColor: 'rgba(255, 255, 255, 0.9)' // Temporary background to see it
             }}
           >
             {/* Product image */}
