@@ -44,7 +44,17 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
   const colorOverlayWidth = 600 * baseScale;
   const productModuleWidth = 300;
   // Move to the right side where color overlay is positioned
-  const productModuleLeft = colorOverlayLeft + 50; // Position within color overlay area
+  const productModuleLeft = colorOverlayLeft + 270; // Moved additional 100px right (was 170px)
+  
+  // Debug: Log the calculated positions
+  console.log('🔍 Product Module Debug:', {
+    colorOverlayPosition: getOverlayPosition(),
+    baseScale,
+    colorOverlayLeft,
+    colorOverlayWidth,
+    productModuleLeft,
+    finalXPosition: `${productModuleLeft}px`
+  });
 
   return (
     <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }}>
