@@ -42,8 +42,9 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
   const baseScale = 0.4; // Base preview scale to match video preview scaling
   const colorOverlayLeft = getOverlayPosition() * baseScale;
   const colorOverlayWidth = 600 * baseScale;
-  const productModuleWidth = 300 * previewScale; // Use larger scale for just the module
-  const productModuleLeft = colorOverlayLeft + (colorOverlayWidth - productModuleWidth) / 2;
+  const productModuleWidth = 300;
+  // Move to the right side where color overlay is positioned
+  const productModuleLeft = colorOverlayLeft + 50; // Position within color overlay area
 
   return (
     <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }}>
