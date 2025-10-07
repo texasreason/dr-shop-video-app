@@ -42,7 +42,7 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
   const colorOverlayLeft = getOverlayPosition() * previewScale;
   const colorOverlayWidth = 600 * previewScale;
   const productModuleWidth = 400 * previewScale;
-  const productModuleLeft = colorOverlayLeft + (colorOverlayWidth - productModuleWidth) / 2 + 200; // Shifted 200px to the right
+  const productModuleLeft = colorOverlayLeft + (colorOverlayWidth - productModuleWidth) / 2 + 100; // Shifted 100px to the right (reduced from 200px)
 
   return (
     <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }}>
