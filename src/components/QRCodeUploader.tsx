@@ -114,47 +114,6 @@ const QRCodeUploader: React.FC = () => {
         </div>
       )}
 
-      {/* Size Controls */}
-      <div className="space-y-3">
-        <label className="block text-sm font-medium text-gray-700">
-          Size (Pixels)
-        </label>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm text-gray-600">Width</label>
-            <div className="flex items-center space-x-2">
-              <input
-                type="range"
-                min="50"
-                max="300"
-                value={qrCode.size.width}
-                onChange={(e) => handleSizeChange('width', Number(e.target.value))}
-                className="flex-1"
-              />
-              <span className="text-sm text-gray-600 w-12 text-right">
-                {qrCode.size.width}px
-              </span>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm text-gray-600">Height</label>
-            <div className="flex items-center space-x-2">
-              <input
-                type="range"
-                min="50"
-                max="300"
-                value={qrCode.size.height}
-                onChange={(e) => handleSizeChange('height', Number(e.target.value))}
-                className="flex-1"
-              />
-              <span className="text-sm text-gray-600 w-12 text-right">
-                {qrCode.size.height}px
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Position Controls */}
       <div className="space-y-3">
         <label className="block text-sm font-medium text-gray-700">
@@ -193,30 +152,6 @@ const QRCodeUploader: React.FC = () => {
               </span>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Live Preview */}
-      <div className="space-y-3">
-        <label className="block text-sm font-medium text-gray-700">
-          Live Preview
-        </label>
-        <div className="relative bg-gray-900 rounded-lg h-32 overflow-hidden">
-          {qrCode.url && (
-            <img
-              src={qrCode.url}
-              alt="QR Code"
-              className="absolute"
-              style={{
-                left: `${qrCode.position.x}%`,
-                top: `${qrCode.position.y}%`,
-                transform: 'translate(-50%, -50%)',
-                width: qrCode.size.width,
-                height: qrCode.size.height,
-                opacity: qrCode.visible ? 1 : 0.3,
-              }}
-            />
-          )}
         </div>
       </div>
     </div>
