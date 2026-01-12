@@ -141,6 +141,7 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
           {/* Product Image - Centered at top */}
           {activeProduct.imageUrl && (
             <div 
+              key={`image-${activeProduct.id}`}
               className="w-full flex justify-center"
               style={{
                 marginBottom: '24px',
@@ -163,6 +164,7 @@ const ProductVideoLayer: React.FC<ProductVideoLayerProps> = ({
           
           {/* Product Information - Below image */}
           <div 
+            key={`text-${activeProduct.id}`}
             className="text-center w-full" 
             style={{ 
               padding: '0 20px',
