@@ -57,7 +57,7 @@ const initialState: AppState = {
     },
   },
   overlayText: {
-    content: 'Your Text Here',
+    content: 'This is the message for\nshopping for Direct Response',
     fontSize: 24,
     fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
     color: '#ffffff',
@@ -66,16 +66,14 @@ const initialState: AppState = {
   },
   qrCode: {
     position: { x: 80, y: 80 },
-    size: { width: 100, height: 100 },
+    size: { width: 188, height: 188 },
     visible: true,
   },
   colorOverlay: {
     color: '#ffffff',
-    opacity: 1.0, // Changed to 100% opacity
+    opacity: 1.0,
     visible: false,
-    width: 750,
-    height: 1080,
-    position: 'right',
+    floatingStyle: false,
   },
   logo: {
     width: 100,
@@ -85,7 +83,7 @@ const initialState: AppState = {
       x: 0,
       y: 0,
     },
-    visible: false,
+    visible: true,
   },
   products: [],
   isPreviewPlaying: false,
@@ -200,9 +198,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
         color: '#ffffff',
         opacity: 0.5,
         visible: false,
-        width: 750,
-        height: 1080,
-        position: 'right',
+        floatingStyle: false,
       },
       logo: project.logo || {
         width: 100,

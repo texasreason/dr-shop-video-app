@@ -16,16 +16,12 @@ const ColorOverlayEditor: React.FC = () => {
     setColorOverlay({ opacity: opacity / 100 });
   };
 
-  const handleWidthChange = (width: number) => {
-    setColorOverlay({ width });
-  };
-
-  const handlePositionChange = (position: 'left' | 'right' | 'center') => {
-    setColorOverlay({ position });
-  };
-
   const toggleVisibility = () => {
     setColorOverlay({ visible: !colorOverlay.visible });
+  };
+
+  const toggleFloatingStyle = () => {
+    setColorOverlay({ floatingStyle: !colorOverlay.floatingStyle });
   };
 
   return (
@@ -121,93 +117,22 @@ const ColorOverlayEditor: React.FC = () => {
         </div>
       </div>
 
-      {/* Width Control */}
-      <div className="space-y-3">
-        <label className="block text-sm font-medium text-gray-700">
-          Width: {colorOverlay.width}px
+      {/* Floating Style Toggle */}
+      <div className="flex items-center justify-between">
+        <label className="text-sm font-medium text-gray-700">
+          Floating Style (Rounded + Shadow)
         </label>
-        <div className="px-3">
-          <input
-            type="range"
-            min="100"
-            max="1920"
-            step="50"
-            value={colorOverlay.width}
-            onChange={(e) => handleWidthChange(Number(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-          />
-        </div>
+        <button
+          onClick={toggleFloatingStyle}
+          className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+            colorOverlay.floatingStyle
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        >
+          {colorOverlay.floatingStyle ? 'Enabled' : 'Disabled'}
+        </button>
       </div>
-
-      {/* Position Control */}
-      <div className="space-y-3">
-        <label className="block text-sm font-medium text-gray-700">
-          Position
-        </label>
-        <div className="grid grid-cols-3 gap-2">
-          {(['left', 'center', 'right'] as const).map((position) => (
-            <button
-              key={position}
-              onClick={() => handlePositionChange(position)}
-              className={`py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
-                colorOverlay.position === position
-                  ? 'bg-primary-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {position.charAt(0).toUpperCase() + position.slice(1)}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Overlay Preview */}
-      <div className="space-y-3">
-        <label className="block text-sm font-medium text-gray-700">
-          Preview
-        </label>
-        <div className="relative bg-gray-100 rounded-lg overflow-hidden" style={{ height: '200px' }}>
-          {/* Background pattern to show transparency */}
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-300 to-gray-400" />
-          
-          {colorOverlay.visible && (
-            <div
-              className="absolute top-0 h-full transition-all duration-300"
-              style={{
-                backgroundColor: colorOverlay.color,
-                opacity: colorOverlay.opacity,
-                width: `${(colorOverlay.width / 1920) * 100}%`,
-                left: colorOverlay.position === 'left' ? '0%' : 
-                      colorOverlay.position === 'right' ? `${100 - (colorOverlay.width / 1920) * 100}%` : 
-                      `${(100 - (colorOverlay.width / 1920) * 100) / 2}%`,
-              }}
-            />
-          )}
-          
-          {/* Sample content to show overlay effect */}
-          <div className="relative z-10 p-4 text-sm text-gray-700">
-            <p>Video content would appear here</p>
-            <p className="text-xs text-gray-500 mt-2">
-              Overlay: {colorOverlay.width}px × {colorOverlay.height}px
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Reset Button */}
-      <button
-        onClick={() => setColorOverlay({
-          color: '#000000',
-          opacity: 0.5,
-          visible: false,
-          width: 750,
-          height: 1080,
-          position: 'right',
-        })}
-        className="w-full btn-secondary"
-      >
-        Reset to Defaults
-      </button>
     </div>
   );
 };

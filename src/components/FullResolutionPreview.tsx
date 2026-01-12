@@ -107,7 +107,45 @@ const FullResolutionPreview: React.FC<FullResolutionPreviewProps> = ({ isOpen, o
       if (colorOverlay.visible) {
         ctx.globalAlpha = colorOverlay.opacity;
         ctx.fillStyle = colorOverlay.color;
-        ctx.fillRect(getOverlayPosition(), 0, colorOverlay.width, colorOverlay.height);
+        
+        if (colorOverlay.floatingStyle) {
+          // Draw rounded rectangle with shadow for floating style
+          const x = 1920 - 620 - 10; // Right-aligned with 10px margin
+          const y = 10; // 10px margin from top
+          const width = 620; // Increased by 20px (10px each side)
+          const height = 1060; // Increased by 20px (10px each side)
+          const radius = 40;
+          
+          // Draw shadow
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+          ctx.shadowBlur = 30;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 10;
+          
+          // Draw rounded rectangle
+          ctx.beginPath();
+          ctx.moveTo(x + radius, y);
+          ctx.lineTo(x + width - radius, y);
+          ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+          ctx.lineTo(x + width, y + height - radius);
+          ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+          ctx.lineTo(x + radius, y + height);
+          ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+          ctx.lineTo(x, y + radius);
+          ctx.quadraticCurveTo(x, y, x + radius, y);
+          ctx.closePath();
+          ctx.fill();
+          
+          // Reset shadow
+          ctx.shadowColor = 'transparent';
+          ctx.shadowBlur = 0;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+        } else {
+          // Draw regular rectangle
+          ctx.fillRect(getOverlayPosition(), 0, 600, 1080);
+        }
+        
         ctx.globalAlpha = 1;
       }
 
@@ -207,8 +245,10 @@ const FullResolutionPreview: React.FC<FullResolutionPreviewProps> = ({ isOpen, o
       // Draw product showcase if exists
       if (currentProduct !== null && products[currentProduct]) {
         const productShowcaseY = 50; // Position 50px from top of canvas
-        const productShowcaseX = productCarouselLeft + 16; // Account for padding
-        const productShowcaseWidth = productCarouselWidth - 32; // Account for padding
+        const baseProductX = colorOverlay.floatingStyle ? (1920 - 620 - 10) : (colorOverlay.visible ? colorOverlayLeft : 1920 - 600); // Match overlay position
+        const rightShift = colorOverlay.floatingStyle ? 40 : 0; // Move 30px right (10px centering + 30px shift)
+        const productShowcaseX = baseProductX + rightShift + 16; // Add shift and padding offset
+        const productShowcaseWidth = 600 - 32; // Account for padding on both sides
         
         // Draw product showcase background (white rounded rectangle)
         ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
@@ -378,57 +418,23 @@ const FullResolutionPreview: React.FC<FullResolutionPreviewProps> = ({ isOpen, o
               {/* Color Overlay - Fixed 600px width */}
               {colorOverlay.visible && (
                 <div
-                  className="absolute top-0"
+                  className={`absolute top-0 ${
+                    colorOverlay.floatingStyle ? 'rounded-3xl shadow-2xl' : ''
+                  }`}
                   style={{
                     backgroundColor: colorOverlay.color,
                     opacity: colorOverlay.opacity,
-                    width: '600px', // Fixed 600px width
-                    height: '1080px', // Full height
-                    left: `${getOverlayPosition()}px`, // Use pixel positioning
+                    width: colorOverlay.floatingStyle ? '620px' : '600px', // Increased by 20px (10px each side) when floating
+                    height: colorOverlay.floatingStyle ? '1060px' : '1080px', // Increased by 20px (10px each side) when floating
+                    right: colorOverlay.floatingStyle ? '10px' : '0px', // 10px margin from right when floating
+                    left: colorOverlay.floatingStyle ? 'auto' : `${getOverlayPosition()}px`, // Use right positioning when floating
+                    top: colorOverlay.floatingStyle ? '10px' : '0px', // 10px margin from top when floating
                     zIndex: 0,
                   }}
                 />
               )}
 
-              {/* Independent QR Code - Separate from product showcase */}
-              {qrCode.visible && qrCode.url && (
-                <div
-                  className="absolute text-center"
-                  style={{
-                    left: `${overlayCenter - 94}px`, // Centered in overlay (188px QR / 2 = 94px offset)
-                    bottom: '50px',
-                    zIndex: 4,
-                  }}
-                >
-                  <img
-                    src={qrCode.url}
-                    alt="QR Code"
-                    className="mx-auto"
-                    style={{
-                      width: '188px',
-                      height: '188px',
-                      marginBottom: '12px'
-                    }}
-                  />
-                  <p 
-                    className="font-bold text-gray-900"
-                    style={{ 
-                      fontSize: '16px',
-                      marginBottom: '4px'
-                    }}
-                  >
-                    SHOP NOW
-                  </p>
-                  <p 
-                    className="text-gray-600"
-                    style={{ 
-                      fontSize: '14px'
-                    }}
-                  >
-                    Scan QR code to shop all the products
-                  </p>
-                </div>
-              )}
+              {/* QR Code is integrated into the product showcase */}
 
               {/* Main Video Area */}
               {videoSettings.baseVideo && (
@@ -455,64 +461,132 @@ const FullResolutionPreview: React.FC<FullResolutionPreviewProps> = ({ isOpen, o
               )}
 
 
-              {/* Product Showcase - Centered on Color Overlay */}
+              {/* Product Showcase - Centered in Color Overlay */}
               {currentProduct !== null && products[currentProduct] && (
                 <div
-                  className="absolute h-full flex flex-col items-center border-2 border-orange-400"
+                  className="absolute h-full flex flex-col items-center justify-start"
                   style={{
-                    left: `${productCarouselLeft}px`,
-                    width: `${productCarouselWidth}px`,
-                    top: '50px', // Position 50px from top of canvas
-                    padding: '40px 16px',
+                    right: colorOverlay.floatingStyle ? '-10px' : '0', // Move 30px right from centered position: 20 - 30 = -10px
+                    width: '600px', // Match color overlay width
+                    top: colorOverlay.floatingStyle ? '10px' : '0', // 10px top margin when floating
+                    height: '1080px',
+                    padding: '50px 40px',
                     zIndex: 4,
                   }}
                 >
-                  <div className="bg-white bg-opacity-95 rounded-lg p-6 w-full">
-                    {products[currentProduct].imageUrl && (
-                      <div className="text-center mb-4">
-                        <img
-                          src={products[currentProduct].imageUrl}
-                          alt={products[currentProduct].title}
-                          className="object-contain mx-auto"
-                          style={{
-                            width: '380px',
-                            height: '380px'
-                          }}
-                        />
-                      </div>
-                    )}
-                    <div className="text-center">
-                      <h3 className="font-bold text-4xl text-gray-900 mb-3">
-                        {products[currentProduct].title}
-                      </h3>
-                      <p className="text-lg text-gray-600 mb-3">
-                        {products[currentProduct].secondaryCopy}
-                      </p>
-                      <p className="text-base text-gray-700 mb-4">
-                        {products[currentProduct].description}
-                      </p>
-                      <p className="text-3xl font-bold text-orange-600 mb-12">
-                        {products[currentProduct].price}
-                      </p>
-                      
-                      {/* QR Code Section within product */}
-                      {qrCode.visible && qrCode.url && (
-                        <div className="text-center">
-                          <img
-                            src={qrCode.url}
-                            alt="QR Code"
-                            className="mx-auto mb-3"
-                            style={{
-                              width: '188px',
-                              height: '188px'
-                            }}
-                          />
-                          <p className="text-base font-bold text-gray-900">SHOP NOW</p>
-                          <p className="text-sm text-gray-600">Scan QR code to shop all the products</p>
-                        </div>
-                      )}
+                  {/* Product Image - Centered at top */}
+                  {products[currentProduct].imageUrl && (
+                    <div className="w-full flex justify-center" style={{ marginBottom: '36px' }}>
+                      <img
+                        src={products[currentProduct].imageUrl}
+                        alt={products[currentProduct].title}
+                        className="object-contain"
+                        style={{
+                          maxWidth: '480px',
+                          maxHeight: '380px',
+                          height: 'auto',
+                        }}
+                      />
                     </div>
+                  )}
+                  
+                  {/* Product Information - Below image */}
+                  <div className="text-center w-full" style={{ padding: '0 30px' }}>
+                    <h3 
+                      style={{
+                        fontSize: '68px',
+                        fontWeight: '900',
+                        marginBottom: '12px',
+                        lineHeight: '1.1',
+                        color: '#000000',
+                        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+                        letterSpacing: '-0.02em'
+                      }}
+                    >
+                      {products[currentProduct].title}
+                    </h3>
+                    <p 
+                      style={{
+                        fontSize: '42px',
+                        fontWeight: '500',
+                        marginBottom: '10px',
+                        lineHeight: '1.3',
+                        color: '#000000',
+                        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'
+                      }}
+                    >
+                      {products[currentProduct].secondaryCopy}
+                    </p>
+                    <p 
+                      style={{
+                        fontSize: '26px',
+                        fontWeight: '400',
+                        marginBottom: '28px',
+                        lineHeight: '1.4',
+                        color: '#666666',
+                        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'
+                      }}
+                    >
+                      {products[currentProduct].description}
+                    </p>
+                    <p 
+                      style={{
+                        fontSize: '72px',
+                        fontWeight: '900',
+                        marginTop: '28px',
+                        marginBottom: '50px',
+                        lineHeight: '1',
+                        color: '#000000',
+                        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'
+                      }}
+                    >
+                      ${products[currentProduct].price.replace('$', '')}
+                    </p>
                   </div>
+
+                  {/* QR Code at bottom of product card */}
+                  {qrCode.visible && qrCode.url && (
+                    <div className="mt-auto w-full flex flex-col items-center justify-center" style={{ padding: '0 40px' }}>
+                      <img
+                        src={qrCode.url}
+                        alt="QR Code"
+                        style={{
+                          width: '200px',
+                          height: '200px',
+                          objectFit: 'contain',
+                          marginBottom: '16px',
+                          display: 'block'
+                        }}
+                      />
+                      <p 
+                        style={{
+                          fontSize: '22px',
+                          fontWeight: '700',
+                          marginBottom: '8px',
+                          color: '#000000',
+                          fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+                          letterSpacing: '0.05em',
+                          textAlign: 'center',
+                          width: '100%'
+                        }}
+                      >
+                        SHOP NOW
+                      </p>
+                      <p 
+                        style={{
+                          fontSize: '16px',
+                          fontWeight: '400',
+                          color: '#666666',
+                          lineHeight: '1.3',
+                          fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+                          textAlign: 'center',
+                          width: '100%'
+                        }}
+                      >
+                        Scan QR code to shop all the products
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
 

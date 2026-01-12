@@ -158,60 +158,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onClose }) => {
 
               <div className="space-y-3">
                 <label className="block text-sm font-medium text-gray-700">
-                  Description
+                  Brand
                 </label>
                 <textarea
                   value={product.description}
                   onChange={(e) => handleFieldChange('description', e.target.value)}
                   className="input-field resize-none h-20"
-                  placeholder="Enter product description"
+                  placeholder="Enter brand name"
                 />
-              </div>
-            </div>
-
-            {/* Timing Controls */}
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-gray-700">
-                Display Timing
-              </label>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm text-gray-600">Start Time (seconds)</label>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="range"
-                      min="0"
-                      max={videoSettings.duration}
-                      step="0.5"
-                      value={product.timing.startTime}
-                      onChange={(e) => handleTimingChange('startTime', Number(e.target.value))}
-                      className="flex-1"
-                    />
-                    <span className="text-sm text-gray-600 w-12 text-right">
-                      {product.timing.startTime}s
-                    </span>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm text-gray-600">Duration (seconds)</label>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="range"
-                      min="1"
-                      max={videoSettings.duration - product.timing.startTime}
-                      step="0.5"
-                      value={product.timing.duration}
-                      onChange={(e) => handleTimingChange('duration', Number(e.target.value))}
-                      className="flex-1"
-                    />
-                    <span className="text-sm text-gray-600 w-12 text-right">
-                      {product.timing.duration}s
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="text-xs text-gray-500">
-                End time: {(product.timing.startTime + product.timing.duration).toFixed(1)}s
               </div>
             </div>
 

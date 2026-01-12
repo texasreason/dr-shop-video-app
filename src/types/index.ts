@@ -54,9 +54,10 @@ export interface ColorOverlay {
   color: string;
   opacity: number;
   visible: boolean;
-  width: number;
-  height: number;
-  position: 'left' | 'right' | 'center';
+  floatingStyle?: boolean;
+  width?: number;
+  height?: number;
+  position?: 'left' | 'right' | 'center';
 }
 
 export interface Logo {

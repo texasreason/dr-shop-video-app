@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { motion } from 'framer-motion';
+import { useDropzone } from 'react-dropzone';
 import { useAppStore } from '../contexts/AppStore';
-import { Plus, GripVertical, Edit, Trash2, Clock } from 'lucide-react';
+import { Plus, GripVertical, Edit, Trash2, Clock, Upload } from 'lucide-react';
 import ProductForm from './ProductForm';
 
 const CarouselEditor: React.FC = () => {
@@ -23,7 +24,7 @@ const CarouselEditor: React.FC = () => {
 
   const handleAddProduct = () => {
     const newProduct = {
-      title: 'New Product',
+      title: 'street 3',
       secondaryCopy: 'Secondary text',
       description: 'Product description',
       price: '0.00', // Remove $ from default - will be added automatically in display
@@ -36,6 +37,34 @@ const CarouselEditor: React.FC = () => {
     addProduct(newProduct);
     console.log('Products after add:', products.length + 1);
   };
+
+  // Handle image file drops
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    acceptedFiles.forEach((file) => {
+      const newProduct = {
+        title: file.name.replace(/\.[^/.]+$/, ''),
+        secondaryCopy: 'Secondary text',
+        description: 'Product description',
+        price: '0.00',
+        image: file,
+        imageUrl: URL.createObjectURL(file),
+        timing: {
+          startTime: products.length * 5,
+          duration: 5,
+        },
+      };
+      addProduct(newProduct);
+    });
+  }, [products.length, addProduct]);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp']
+    },
+    multiple: true,
+    noClick: false,
+  });
 
   const calculateProductTiming = (index: number) => {
     const totalDuration = videoSettings.duration;
@@ -73,6 +102,32 @@ const CarouselEditor: React.FC = () => {
         </button>
       </div>
 
+      {/* Drag & Drop Zone */}
+      <div
+        {...getRootProps()}
+        className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+          isDragActive
+            ? 'border-blue-500 bg-blue-50'
+            : 'border-gray-300 bg-gray-50 hover:border-gray-400 hover:bg-gray-100'
+        }`}
+      >
+        <input {...getInputProps()} />
+        <div className="flex flex-col items-center space-y-3">
+          <Upload className="h-12 w-12 text-gray-400" />
+          <div>
+            <p className="text-base font-medium text-gray-700">
+              Drag & drop product images here
+            </p>
+            <p className="text-sm text-gray-500 mt-1">
+              or click to select multiple images (JPG, PNG, GIF, WebP)
+            </p>
+          </div>
+          <p className="text-xs text-gray-400">
+            Each image will create a new product tile that you can edit
+          </p>
+        </div>
+      </div>
+
       {/* Products List */}
       <div className="space-y-4">
         {products.length === 0 ? (
@@ -96,31 +151,43 @@ const CarouselEditor: React.FC = () => {
                       index={index}
                     >
                       {(provided, snapshot) => (
-                        <motion.div
+                        <div
                           ref={provided.innerRef}
                           {...provided.draggableProps}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -20 }}
-                          className={`bg-white border rounded-lg p-4 ${
-                            snapshot.isDragging ? 'shadow-lg' : 'shadow-sm'
+                          className={`bg-white border rounded-lg p-4 transition-shadow ${
+                            snapshot.isDragging ? 'shadow-lg ring-2 ring-blue-500' : 'shadow-sm'
                           }`}
+                          style={{
+                            ...provided.draggableProps.style,
+                            userSelect: 'none',
+                          }}
                         >
                           <div className="flex items-center space-x-3">
                             <div
                               {...provided.dragHandleProps}
-                              className="text-gray-400 hover:text-gray-600 cursor-grab"
+                              className="text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing flex-shrink-0"
+                              style={{ touchAction: 'none' }}
+                              title="Drag to reorder"
                             >
                               <GripVertical className="h-5 w-5" />
                             </div>
                             
+                            {/* Product Thumbnail */}
+                            {product.imageUrl && (
+                              <div className="flex-shrink-0">
+                                <img
+                                  src={product.imageUrl}
+                                  alt={product.title}
+                                  className="w-16 h-16 object-cover rounded border border-gray-200"
+                                  draggable="false"
+                                />
+                              </div>
+                            )}
+                            
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center space-x-2">
-                                <h4 className="font-medium text-gray-900 truncate">
-                                  {product.title}
-                                </h4>
-                                <span className="text-sm text-gray-500">
-                                  #{index + 1}
+                                <span className="text-sm font-medium text-gray-500">
+                                  {index + 1}
                                 </span>
                               </div>
                               <p className="text-sm text-gray-600 truncate">
@@ -138,22 +205,24 @@ const CarouselEditor: React.FC = () => {
                               </div>
                             </div>
 
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-2 flex-shrink-0">
                               <button
                                 onClick={() => setEditingProduct(product.id)}
                                 className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                                type="button"
                               >
                                 <Edit className="h-4 w-4" />
                               </button>
                               <button
                                 onClick={() => removeProduct(product.id)}
                                 className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                                type="button"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
                             </div>
                           </div>
-                        </motion.div>
+                        </div>
                       )}
                     </Draggable>
                   ))}

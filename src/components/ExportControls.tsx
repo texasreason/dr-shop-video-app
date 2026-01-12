@@ -207,14 +207,6 @@ const ExportControls: React.FC<ExportControlsProps> = ({ isExporting, setIsExpor
         </div>
       )}
 
-      {/* Technical Info */}
-      <div className="text-xs text-gray-500 space-y-1">
-        <p>• Export format: MP4 (H.264)</p>
-        <p>• Aspect ratio: 16:9</p>
-        <p>• Frame rate: 30fps</p>
-        <p>• Quality: High</p>
-      </div>
-
       {/* Full Resolution Preview Modal */}
       <FullResolutionPreview 
         isOpen={showFullPreview}

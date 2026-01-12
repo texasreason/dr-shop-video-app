@@ -262,13 +262,16 @@ const PreviewPanel: React.FC = () => {
         {/* Color Overlay - positioned outside scaled container with exact positioning */}
         {colorOverlay.visible && (
           <div
-            className="absolute top-0 transition-all duration-300"
+            className={`absolute transition-all duration-300 ${
+              colorOverlay.floatingStyle ? 'rounded-3xl shadow-2xl' : ''
+            }`}
             style={{
               backgroundColor: colorOverlay.color,
               opacity: colorOverlay.opacity,
-              width: `${(600 / 1920) * 100}%`, // 600px as percentage of 1920px = 31.25%
-              height: '100%', // Full height of preview container
-              right: '0%', // Always right-aligned to match 1920x1080
+              width: colorOverlay.floatingStyle ? `${(620 / 1920) * 100}%` : `${(600 / 1920) * 100}%`, // 620px when floating, 600px otherwise
+              height: colorOverlay.floatingStyle ? 'calc(100% - 20px)' : '100%', // 10px margin top + bottom when floating
+              right: colorOverlay.floatingStyle ? '10px' : '0%', // 10px margin from right edge when floating
+              top: colorOverlay.floatingStyle ? '10px' : '0', // 10px margin top when floating
               zIndex: 0,
             }}
           />
@@ -290,45 +293,7 @@ const PreviewPanel: React.FC = () => {
 
 
 
-          {/* Independent QR Code - Separate from product module */}
-          {qrCode.visible && qrCode.url && (
-            <div
-              className="absolute text-center"
-              style={{
-                left: `${fullResOverlayCenter - 44}px`, // Positioned in color overlay
-                bottom: '50px', // Full resolution positioning
-                zIndex: 4,
-              }}
-            >
-              <img
-                src={qrCode.url}
-                alt="QR Code"
-                className="mx-auto"
-                style={{
-                  width: '188px', // Full resolution size
-                  height: '188px', // Full resolution size
-                  marginBottom: '12px' // Full resolution margin
-                }}
-              />
-              <p 
-                className="font-bold text-gray-900"
-                style={{ 
-                  fontSize: '16px', // Full resolution font size
-                  marginBottom: '4px'
-                }}
-              >
-                SHOP NOW
-              </p>
-              <p 
-                className="text-gray-600"
-                style={{ 
-                  fontSize: '14px' // Full resolution font size
-                }}
-              >
-                Scan QR code to shop all the products
-              </p>
-            </div>
-          )}
+          {/* QR Code is integrated into the product showcase */}
 
           {/* Product rendering handled by ProductVideoLayer */}
           <ProductVideoLayer 
@@ -389,7 +354,7 @@ const PreviewPanel: React.FC = () => {
                     paddingTop: '0', // Align to top of module
                          maxWidth: '700px', // Full resolution max width
                     wordWrap: 'break-word',
-                    whiteSpace: 'normal',
+                    whiteSpace: 'pre-line', // Support line breaks
                     marginLeft: logo.visible && logo.url ? '0' : '0', // No additional margin since divider handles spacing
                   }}
                 >
@@ -577,34 +542,6 @@ const PreviewPanel: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Product Timeline */}
-      {products.length > 0 && (
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <h4 className="font-medium text-gray-900 mb-3">Product Timeline</h4>
-          <div className="space-y-2">
-            {products.map((product, index) => (
-              <div
-                key={product.id}
-                className="flex items-center space-x-3 p-2 rounded-lg transition-colors bg-gray-50 hover:bg-gray-100"
-              >
-                <div className="w-3 h-3 rounded-full bg-primary-500 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    {product.title}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {product.timing.startTime.toFixed(1)}s - {(product.timing.startTime + product.timing.duration).toFixed(1)}s
-                  </p>
-                </div>
-                <div className="text-sm text-gray-600">
-                  {product.price}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Export Status */}
       {isExporting && (
