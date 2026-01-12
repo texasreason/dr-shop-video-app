@@ -219,14 +219,6 @@ const QRCodeUploader: React.FC = () => {
           )}
         </div>
       </div>
-
-      {/* Usage Note */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-        <p className="text-sm text-blue-800">
-          <strong>Tip:</strong> Position the QR code in a corner or bottom area 
-          where it won't interfere with your main content.
-        </p>
-      </div>
     </div>
   );
 };
