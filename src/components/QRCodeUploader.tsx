@@ -99,14 +99,17 @@ const QRCodeUploader: React.FC = () => {
               <X className="h-4 w-4" />
             </button>
           </div>
-          <div className="relative bg-gray-100 rounded-lg overflow-hidden p-4">
+          <div className="relative bg-gray-100 rounded-lg overflow-hidden p-4 flex justify-center">
             <img
               src={qrCode.url}
               alt="QR Code preview"
               className="mx-auto"
               style={{
-                width: qrCode.size.width,
-                height: qrCode.size.height,
+                maxWidth: '200px',
+                maxHeight: '200px',
+                width: 'auto',
+                height: 'auto',
+                objectFit: 'contain',
                 opacity: qrCode.visible ? 1 : 0.3,
               }}
             />
