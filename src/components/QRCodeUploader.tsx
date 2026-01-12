@@ -113,47 +113,6 @@ const QRCodeUploader: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Position Controls */}
-      <div className="space-y-3">
-        <label className="block text-sm font-medium text-gray-700">
-          Position (Percentage)
-        </label>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm text-gray-600">X Position</label>
-            <div className="flex items-center space-x-2">
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={qrCode.position.x}
-                onChange={(e) => handlePositionChange('x', Number(e.target.value))}
-                className="flex-1"
-              />
-              <span className="text-sm text-gray-600 w-12 text-right">
-                {qrCode.position.x}%
-              </span>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm text-gray-600">Y Position</label>
-            <div className="flex items-center space-x-2">
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={qrCode.position.y}
-                onChange={(e) => handlePositionChange('y', Number(e.target.value))}
-                className="flex-1"
-              />
-              <span className="text-sm text-gray-600 w-12 text-right">
-                {qrCode.position.y}%
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
